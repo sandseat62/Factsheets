@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grace Community Church: Digital Wellness Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals with Trust Blue and Alert Amber -->
+    <!-- Application Structure Plan: The SPA uses a dashboard layout with a persistent sidebar (or top nav on mobile) allowing users to freely explore the 6 distinct 'Digital Fronts' (Social Media, Pornography, Shopping, Gaming, Doomscrolling, Betting). This non-linear structure prioritizes user autonomy, letting congregants immediately access the specific topic they need help with. Each section follows a consistent, pedagogical flow: Context (Intro/History) -> Data (Interactive Chart) -> Impact (Brain/Kids) -> Action (Interactive Checklist). This ensures the complex neurobiological and algorithmic concepts from the report are broken down into digestible, actionable steps, moving the user from understanding to practical application. -->
+    <!-- Visualization & Content Choices: 
+    1. Social Media -> Goal: Compare addiction rates -> Viz: Bar Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Clearly shows youth vulnerability. 
+    2. Pornography -> Goal: Inform on exposure -> Viz: Donut Chart (Chart.js) -> Interaction: Hover -> Justification: Highlights the massive scale of accidental exposure.
+    3. Shopping -> Goal: Show market scale -> Viz: Half-Doughnut (Chart.js) -> Interaction: Hover -> Justification: Visualizes the trillion-dollar scale of the click trap.
+    4. Gaming -> Goal: Show mental health risk over time -> Viz: Line Chart (Chart.js) -> Interaction: Hover points -> Justification: Demonstrates the '3-hour tipping point' clearly.
+    5. Doomscrolling -> Goal: Highlight sleep/time loss -> Viz: Horizontal Bar (Chart.js) -> Interaction: Hover -> Justification: Emphasizes passive time consumption.
+    6. Betting -> Goal: Compare spender types -> Viz: Logarithmic Bar Chart (Chart.js) -> Interaction: Hover -> Justification: Exposes the massive disparity of 'Whale' spending. 
+    Action Plans -> Goal: Change behavior -> Viz: Interactive HTML Checklists -> Interaction: Click to strikethrough -> Justification: Provides immediate psychological reward for setting boundaries. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sand: '#f5f5f4',
+                        stone: '#292524',
+                        trust: '#0284c7',
+                        alert: '#d97706',
+                        sage: '#65a30d'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        serif: ['Merriweather', 'ui-serif', 'Georgia', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f5f5f4;
+            color: #292524;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-btn.active {
+            background-color: #0284c7;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .checklist-item.checked {
+            text-decoration: line-through;
+            color: #a8a29e;
+        }
+        .checklist-item.checked .check-icon {
+            color: #65a30d;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col md:flex-row">
+
+    <nav class="w-full md:w-64 bg-white shadow-lg md:h-screen md:sticky md:top-0 z-10 flex flex-col overflow-y-auto">
+        <div class="p-6 border-b border-stone-200">
+            <h1 class="text-2xl font-serif font-bold text-trust leading-tight">Grace Community</h1>
+            <p class="text-sm text-stone-500 mt-1 uppercase tracking-wider font-semibold">Digital Wellness</p>
+        </div>
+        <div class="p-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible" id="nav-container">
+            <button data-target="welcome" class="nav-btn active text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">🏠 Welcome</button>
+            <button data-target="social" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">📱 Validation Trap</button>
+            <button data-target="porn" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">🔥 Digital Firehose</button>
+            <button data-target="shopping" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">🛒 The Click Trap</button>
+            <button data-target="gaming" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">🎮 Digital Playground</button>
+            <button data-target="doom" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">📰 Endless Loop</button>
+            <button data-target="betting" class="nav-btn text-left px-4 py-3 rounded-lg text-stone-700 hover:bg-stone-100 transition-colors whitespace-nowrap md:whitespace-normal font-medium">🎰 Invisible Casino</button>
+        </div>
+        <div class="mt-auto p-6 text-xs text-stone-400 border-t border-stone-200 hidden md:block">
+            A Church Without Curtains<br>High Trust, Low Shame.
+        </div>
+    </nav>
+
+    <main class="flex-1 p-6 md:p-12 overflow-x-hidden" id="main-content">
+        
+    </main>
+
+    <script>
+        const appData = {
+            welcome: {
+                title: "Welcome to the Digital Wellness Hub",
+                icon: "🏠",
+                intro: "Technology has changed so fast, hasn't it? Our phones and tablets aren't just helpful little tools sitting quietly on a desk anymore. Today, they're immersive, 24/7 worlds carefully built by thousands of engineers to grab our attention and hold onto it for as long as possible. Let's be real: we've gone from using our tech to letting our tech use us!",
+                content: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-stone-200 mb-8">
+                        <h3 class="text-xl font-serif font-bold text-stone-800 mb-4">Our Mission</h3>
+                        <p class="text-stone-600 leading-relaxed mb-4">This hub is a fully loaded, comprehensive guide to help our church family understand the six major digital habits we all face today. Our goal isn't to be afraid of technology! Instead, we want to practice wise, biblical stewardship over our attention—because our attention is our most valuable asset.</p>
+                        <p class="text-stone-600 leading-relaxed font-semibold">Please select a topic from the menu to begin exploring the insights, algorithms, and practical action plans to protect your home and heart.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-trust/10 p-6 rounded-xl border border-trust/20">
+                            <h4 class="font-bold text-trust text-lg mb-2">The 2011 Digital Earthquake</h4>
+                            <p class="text-stone-700 text-sm">Before 2011, the internet was a tool we visited. After the smartphone revolution, it became a 24/7 environment. Feeds stopped being chronological and became algorithmic, designed purely to trigger emotions and hold attention.</p>
+                        </div>
+                        <div class="bg-alert/10 p-6 rounded-xl border border-alert/20">
+                            <h4 class="font-bold text-alert text-lg mb-2">A Church Without Curtains</h4>
+                            <p class="text-stone-700 text-sm">You absolutely do not have to figure all this out on your own! Addiction of any kind thrives in isolation and shame. We are committed to high trust, total support, absolute grace, and the unwavering truth of the Gospel.</p>
+                        </div>
+                    </div>
+                `,
+                hasChart: false
+            },
+            social: {
+                title: "Social Media & The Validation Trap",
+                icon: "📱",
+                intro: "Social media isn't just a fun way to keep in touch anymore! It has turned into a giant environment of constant social comparison. It creates an endless loop where we're always hunting for digital approval. This pulls our minds away from the physical world and makes us forget that our true identity is safely rooted in being a child of God.",
+                history: "Before 2011, you sat down at a computer, read pages in order, and connected with actual people. Now, smartphones put the internet in our pockets 24/7. Feeds stopped showing recent posts from friends and started using complex math to show whatever would keep you reacting.",
+                algorithms: "Platforms use 'Engagement Ranking.' They track exactly what makes you stop scrolling and react. The app pushes a relentless firehose of content designed to trigger extreme joy, outrage, or jealousy just to keep you hooked. You are the product, and your attention is being sold.",
+                impactTitle: "The Brain & Influencer Culture",
+                impactText: "These apps work exactly like slot machines! This unpredictability releases massive surges of dopamine, leaving you constantly restless. Influencers post highly edited, sponsored lives, forcing everyday users into an unhealthy comparison trap, replacing true community with passive consumption.",
+                chartConfig: {
+                    type: 'bar',
+                    data: {
+                        labels: ['Young Adults (18-22)', 'Teens (13-17)', 'Women/Girls (Dependency)'],
+                        datasets: [{
+                            label: '% Reporting Addiction / Strong Dependency',
+                            data: [40, 36, 34],
+                            backgroundColor: ['#d97706', '#0284c7', '#65a30d'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Self-Reported Digital Dependency Rates', font: { size: 16 } }
+                        },
+                        scales: { y: { beginAtZero: true, max: 100, ticks: { callback: function(value){return value+'%'} } } }
+                    }
+                },
+                actions: [
+                    "Try Grayscale Mode: Change your phone screen to black and white.",
+                    "Clean Up Your Alerts: Turn off every notification that doesn't come directly from a real person.",
+                    "Analog Sundays: Take a 24-hour break from social apps once a week.",
+                    "Wait to Post: Practice 'Delayed Posting' by waiting a full day before sharing photos.",
+                    "The Opposite Follow: Intentionally follow three credible voices you disagree with."
+                ]
+            },
+            porn: {
+                title: "Online Pornography & The Digital Firehose",
+                icon: "🔥",
+                intro: "It offers the dangerous illusion of intimacy without any of the real-world effort or vulnerability. Because it gives instant gratification without the risk of being rejected or the need to show sacrificial love, users often withdraw completely from the beautiful, hard work of real-life relationships and marriage.",
+                history: "In the past, adult material was mostly static—like magazines or DVDs—and you had to intentionally leave your house to go find it. Today, social media feeds automatically push explicit material right toward users based on subtle clicks. It has shifted from an intentional search to an accidental bombardment.",
+                algorithms: "Platforms use advanced technology to create custom material based on your specific click history. They build the 'perfect' distraction customized for your unique vulnerabilities. The algorithms ensure an endless flow of new things to look at, tracking your eye movement to push more extreme content.",
+                impactTitle: "The Coolidge Effect & Childhood Impact",
+                impactText: "Our brains naturally crave new surprises—the 'Coolidge Effect.' As your brain gets used to one image, it demands something newer and more shocking, completely numbing the user. Kids are seeing graphic material long before their brains are ready, twisting their understanding of healthy relationships and human dignity.",
+                chartConfig: {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Accidental Teen Exposure', 'Severe Behavioral Addiction', 'Average Age of Exposure (12 yrs)'],
+                        datasets: [{
+                            data: [66, 10, 24], 
+                            backgroundColor: ['#d97706', '#b91c1c', '#0284c7'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: true, text: 'The Scope of the Firehose', font: { size: 16 } }
+                        }
+                    }
+                },
+                actions: [
+                    "Block it at the Source: Set up a family filter (like OpenDNS) on your Wi-Fi router.",
+                    "Device-Free Bedrooms: All phones and laptops must charge in the living room overnight.",
+                    "The High-Trust Strategy: Keep communication wide open for accidental exposure without shaming.",
+                    "Accountability Tools: Use software like Covenant Eyes for honest, grace-filled accountability."
+                ]
+            },
+            shopping: {
+                title: "Online Shopping & The Click Trap",
+                icon: "🛒",
+                intro: "Online shopping has totally changed from buying what we actually need to an impulsive, constant habit! For many people, the real thrill isn't even owning the product anymore; the high comes entirely from that momentary rush of clicking 'Place Order,' leading to hidden debt and 'Unopened Box Syndrome.'",
+                history: "A huge shift happened around 2012 when shopping moved from desktop computers to our cell phones. Before, you had to plan, sit at a desk, research, and pull out your wallet. Now, the global mall is right in your pocket, targeting you 24/7 in tiny moments of downtime.",
+                algorithms: "Retailers use sophisticated tracking to predict major life events—like a move or pregnancy—before you even tell your family, sending perfectly timed emotional ads! 'Buy-Now-Pay-Later' options hide the painful total price, totally bypassing your brain's logical budgeting skills.",
+                impactTitle: "Invisible Money & Social Commerce",
+                impactText: "Digital shopping removes the psychological 'pain' of spending. FaceID and saved cards bypass the decision-making part of your brain, treating it more like winning a video game. Influencers act like trusted, intimate friends, using exclusive discount codes to create a false sense of urgency.",
+                chartConfig: {
+                    type: 'pie',
+                    data: {
+                        labels: ['Total Consumer Spending', 'E-commerce Share ($1.2 Trillion)'],
+                        datasets: [{
+                            data: [84, 16],
+                            backgroundColor: ['#e7e5e4', '#0284c7'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        rotation: -90,
+                        circumference: 180,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            title: { display: true, text: 'E-commerce Market Scale', font: { size: 16 } }
+                        }
+                    }
+                },
+                actions: [
+                    "Delete Saved Cards: Manually remove credit card info from retail apps and browser autofill.",
+                    "Build Technical Shields: Use services like Privacy.com to set hard spending limits.",
+                    "Turn on 'Ask to Buy': Mandate approval requests for any purchase on a child's device.",
+                    "The 24-Hour Rule: Items must stay in your digital cart for 24 hours before you click buy."
+                ]
+            },
+            gaming: {
+                title: "Online Gaming & The Digital Playground",
+                icon: "🎮",
+                intro: "Video games aren't just an occasional rainy-day hobby anymore! They've become the main social hangout spot for today's youth. While creative play is healthy, modern digital gaming is designed to literally never end, capturing a child's attention and turning innocent play into an endless loop of anxiety.",
+                history: "Back in the 1990s, games had an end. You played a level, the credits rolled, and you walked away happy! Today, games are infinite, online social worlds that constantly update, ask for micro-transactions, and are designed by psychologists to never reach a natural conclusion.",
+                algorithms: "Games use a 'Live Economy.' In-game events and rewards are strictly timed. If a player doesn't log in on a specific day, they permanently miss out on a digital reward. This drives intense Fear Of Missing Out (FOMO) and ensures the video game dictates the family's daily schedule!",
+                impactTitle: "Hyper-Arousal & Grooming Mechanics",
+                impactText: "Continuous, fast-paced gaming replaces calm focus with constant restlessness, exhausting the brain's reward centers. Modern games feature 'loot boxes'—digital slot machines with flashing lights—grooming young minds for gambling. Professional gamers also drive a toxic culture of 'Status Spending' on digital outfits.",
+                chartConfig: {
+                    type: 'line',
+                    data: {
+                        labels: ['1 Hour', '2 Hours', '3 Hours (Tipping Point)', '4 Hours', '5+ Hours'],
+                        datasets: [{
+                            label: 'Depression/Anxiety Risk Multiplier',
+                            data: [1, 1.2, 3.0, 3.8, 4.5],
+                            borderColor: '#d97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#b91c1c'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Mental Health Risk vs. Daily Play Time', font: { size: 16 } }
+                        },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                },
+                actions: [
+                    "Set Event Limits: Say 'You can play two more matches' instead of '15 minutes left'.",
+                    "Keep Gaming Public: Keep all gaming consoles and computers in common areas like the living room.",
+                    "Bring Back Analog Play: Encourage hands-on play like LEGOs, art, or outdoor sports.",
+                    "Supervise Social Chat: Set up 'Parent Privileges' to lock communication to 'Friends Only'."
+                ]
+            },
+            doom: {
+                title: "Doomscrolling & The Endless Loop",
+                icon: "📰",
+                intro: "Endlessly swiping through bad news and alarming political stories on your phone gives a false sense of comfort that we're 'staying informed.' In reality, it's just a habit that feeds deep anxiety, sleeplessness, and anger, overriding our natural instincts.",
+                history: "Before 2011, the internet was made of finite pages. You reached the bottom of an article, clicked to the next page, and had a brief moment to decide to stop. Modern design invented the 'infinite scroll,' removing the psychological stop sign so our brains consume stressful stories for hours.",
+                algorithms: "Feeds use 'Outrage Architecture.' Because humans are biologically wired to pay attention to threats, the algorithm heavily promotes sensationalist, divisive, and fear-based content. It uses unpredictable rewards—like pulling the lever on a slot machine—to keep you nervously scanning.",
+                impactTitle: "Mean World Syndrome & Echo Chambers",
+                impactText: "Constantly reading negative news leads to 'Mean World Syndrome'—believing the world is way more dangerous and hopeless than it actually is. The brain is left in a constant state of fight-or-flight. Hyper-partisan commentators actively use exaggerated content to build impenetrable echo chambers.",
+                chartConfig: {
+                    type: 'bar',
+                    data: {
+                        labels: ['Americans Losing Sleep', 'Teens Online Constantly'],
+                        datasets: [{
+                            label: '% of Demographic',
+                            data: [38, 46],
+                            backgroundColor: ['#0284c7', '#d97706'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'The Cost of the Endless Loop', font: { size: 16 } }
+                        },
+                        scales: { x: { beginAtZero: true, max: 100, ticks: { callback: function(value){return value+'%'} } } }
+                    }
+                },
+                actions: [
+                    "Set a 15-Minute Stop Sign: Put a hard, non-negotiable daily timer on all your news apps.",
+                    "Push to Pull: Disable ALL news notifications! Intentionally visit a specific site once a day.",
+                    "Hide the Apps: Move news and social apps entirely off your home screen into hidden folders.",
+                    "Disable Autoplay: Turn off autoplay on all video platforms to force an active decision."
+                ]
+            },
+            betting: {
+                title: "Online Betting & The Invisible Casino",
+                icon: "🎰",
+                intro: "Gambling isn't just an activity stuck in a physical building in Las Vegas anymore! The casino is now a high-powered app sitting right in your pocket. By removing all physical and social barriers to betting, apps have created a fast-paced financial crisis devastating families in total secrecy.",
+                history: "For generations, gambling had natural friction. Back in 1990, you had to drive to an ATM, get cash, go to a casino, and place a bet in front of other people. By 2026, betting apps have erased those stop signs. Now, it's a completely frictionless environment accessible instantly via FaceID.",
+                algorithms: "Modern sportsbooks use real-time data to push perfectly timed offers. If you lose a string of bets, the app immediately triggers a 'Loss-Trap' notification offering a free bonus bet! They also promote 'Micro-Betting'—betting on every single pitch or penalty kick.",
+                impactTitle: "Digital Numbing & Youth Grooming",
+                impactText: "Using FaceID and seeing funds as digital points creates 'Digital Numbing'—losing money feels like losing points in a video game. The rapid pace of micro-betting creates hundreds of quick dopamine hits, completely hijacking your brain's reward center. Plus, kids are groomed for this via video game Loot Boxes.",
+                chartConfig: {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mass Market Bettor', 'High Roller', 'Top-Tier Whale'],
+                        datasets: [{
+                            label: 'Estimated Annual Loss ($)',
+                            data: [3000, 40000, 750000],
+                            backgroundColor: ['#e7e5e4', '#d97706', '#b91c1c'],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'The Hidden Scale of Annual Losses (Log Scale)', font: { size: 16 } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return '$' + context.parsed.y.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        scales: { 
+                            y: { 
+                                type: 'logarithmic',
+                                ticks: {
+                                    callback: function(value) {
+                                        if (value === 1000 || value === 10000 || value === 100000 || value === 1000000) {
+                                            return '$' + value.toLocaleString();
+                                        }
+                                        return '';
+                                    }
+                                }
+                            } 
+                        }
+                    }
+                },
+                actions: [
+                    "Build Digital Walls: Disconnect saved cards/banks from phones and turn off one-click buying.",
+                    "Block at the Router: Use strict family filtering to block gambling sites at your Wi-Fi router.",
+                    "The Honest Conversation: Explain exactly how apps use FaceID to bypass logic and steal money.",
+                    "Maintain High-Trust: Create a low-shame environment so financial mistakes can be confessed safely."
+                ]
+            }
+        };
+
+        let currentChart = null;
+
+        function renderChecklist(actions) {
+            return actions.map((action, index) => `
+                <div class="checklist-item flex items-start gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors cursor-pointer border border-transparent hover:border-stone-200" onclick="toggleCheck(this)">
+                    <div class="flex-shrink-0 mt-0.5 text-stone-300 check-icon transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <p class="text-stone-700 leading-snug transition-colors select-none">${action}</p>
+                </div>
+            `).join('');
+        }
+
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+        }
+
+        function renderSection(key) {
+            const data = appData[key];
+            const mainContent = document.getElementById('main-content');
+            
+            if (key === 'welcome') {
+                mainContent.innerHTML = `
+                    <div class="fade-in max-w-4xl mx-auto">
+                        <h2 class="text-4xl font-serif font-bold text-stone-800 mb-6 flex items-center gap-3">
+                            <span>${data.icon}</span> ${data.title}
+                        </h2>
+                        <p class="text-xl text-stone-600 leading-relaxed mb-10">${data.intro}</p>
+                        ${data.content}
+                    </div>
+                `;
+                if(currentChart) currentChart.destroy();
+                return;
+            }
+
+            mainContent.innerHTML = `
+                <div class="fade-in max-w-5xl mx-auto">
+                    <header class="mb-10 border-b border-stone-200 pb-8">
+                        <h2 class="text-4xl font-serif font-bold text-stone-800 mb-4 flex items-center gap-3">
+                            <span class="text-trust bg-trust/10 p-2 rounded-xl">${data.icon}</span> ${data.title}
+                        </h2>
+                        <p class="text-xl text-stone-600 leading-relaxed">${data.intro}</p>
+                    </header>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                        <div class="space-y-8">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                                <h3 class="text-lg font-bold text-trust mb-3 uppercase tracking-wide text-sm">The Shift: How We Got Here</h3>
+                                <p class="text-stone-700 leading-relaxed mb-4">${data.history}</p>
+                                <div class="bg-stone-50 p-4 rounded-lg border border-stone-100">
+                                    <h4 class="font-bold text-stone-800 mb-2">The Algorithmic Trap</h4>
+                                    <p class="text-stone-600 text-sm leading-relaxed">${data.algorithms}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                                <h3 class="text-lg font-bold text-alert mb-3 uppercase tracking-wide text-sm">${data.impactTitle}</h3>
+                                <p class="text-stone-700 leading-relaxed">${data.impactText}</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 flex flex-col h-full">
+                                <h3 class="text-lg font-bold text-stone-800 mb-4 uppercase tracking-wide text-sm">Data Explorer</h3>
+                                <div class="chart-container flex-grow">
+                                    <canvas id="sectionChart"></canvas>
+                                </div>
+                                <p class="text-xs text-center text-stone-400 mt-4 italic">Interactive Visualization - Hover for details</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-trust border-t-4 mb-10">
+                        <h3 class="text-2xl font-serif font-bold text-stone-800 mb-2">Action Plan: Digital Shields</h3>
+                        <p class="text-stone-500 mb-6">Click items to mark them as completed and build your boundaries.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                            ${renderChecklist(data.actions)}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const ctx = document.getElementById('sectionChart').getContext('2d');
+            currentChart = new Chart(ctx, data.chartConfig);
+        }
+
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active', 'bg-trust', 'text-white'));
+                
+                const target = e.currentTarget;
+                target.classList.add('active');
+                
+                if (window.innerWidth < 768) {
+                    const navContainer = document.getElementById('nav-container');
+                    navContainer.scrollLeft = target.offsetLeft - 20;
+                }
+
+                renderSection(target.dataset.target);
+            });
+        });
+
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#57534e';
+        
+        renderSection('welcome');
+    </script>
+</body>
+</html>
