@@ -6,7 +6,7 @@
     <title>Grace Community Church: Digital Wellness Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Chosen Palette: Warm Neutrals with Trust Blue and Alert Amber -->
+    <!-- Chosen Palette: Gracewired Brand Colors (Navy Blue, Vibrant Orange, Charcoal, Off-White) -->
     <!-- Application Structure Plan: The SPA uses a dashboard layout with a persistent sidebar (or top nav on mobile) allowing users to freely explore the 6 distinct 'Digital Fronts' (Social Media, Pornography, Shopping, Gaming, Doomscrolling, Betting). This non-linear structure prioritizes user autonomy, letting congregants immediately access the specific topic they need help with. Each section follows a consistent, pedagogical flow: Context (Intro/History) -> Data (Interactive Chart) -> Impact (Brain/Kids) -> Action (Interactive Checklist). This ensures the complex neurobiological and algorithmic concepts from the report are broken down into digestible, actionable steps, moving the user from understanding to practical application. -->
     <!-- Visualization & Content Choices: 
     1. Social Media -> Goal: Compare addiction rates -> Viz: Bar Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Clearly shows youth vulnerability. 
@@ -22,11 +22,11 @@
             theme: {
                 extend: {
                     colors: {
-                        sand: '#f5f5f4',
-                        stone: '#292524',
-                        trust: '#0284c7',
-                        alert: '#d97706',
-                        sage: '#65a30d'
+                        sand: '#f8fafc', /* Slate 50 - Clean off-white */
+                        stone: '#0f172a', /* Slate 900 - Dark charcoal for text */
+                        trust: '#1e3a8a', /* Deep Navy Blue for primary brand */
+                        alert: '#ea580c', /* Vibrant Orange for alerts and accents */
+                        sage: '#16a34a'   /* Clean Green for checkmarks */
                     },
                     fontFamily: {
                         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
@@ -38,8 +38,8 @@
     </script>
     <style>
         body {
-            background-color: #f5f5f4;
-            color: #292524;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
         .chart-container {
             position: relative;
@@ -56,16 +56,16 @@
             }
         }
         .nav-btn.active {
-            background-color: #0284c7;
+            background-color: #1e3a8a;
             color: #ffffff;
             font-weight: 600;
         }
         .checklist-item.checked {
             text-decoration: line-through;
-            color: #a8a29e;
+            color: #94a3b8;
         }
         .checklist-item.checked .check-icon {
-            color: #65a30d;
+            color: #16a34a;
         }
         .fade-in {
             animation: fadeIn 0.4s ease-in-out;
@@ -141,7 +141,7 @@
                         datasets: [{
                             label: '% Reporting Addiction / Strong Dependency',
                             data: [40, 36, 34],
-                            backgroundColor: ['#d97706', '#0284c7', '#65a30d'],
+                            backgroundColor: ['#ea580c', '#1e3a8a', '#16a34a'],
                             borderRadius: 6
                         }]
                     },
@@ -177,7 +177,7 @@
                         labels: ['Accidental Teen Exposure', 'Severe Behavioral Addiction', 'Average Age of Exposure (12 yrs)'],
                         datasets: [{
                             data: [66, 10, 24], 
-                            backgroundColor: ['#d97706', '#b91c1c', '#0284c7'],
+                            backgroundColor: ['#ea580c', '#b91c1c', '#1e3a8a'],
                             borderWidth: 0
                         }]
                     },
@@ -211,7 +211,7 @@
                         labels: ['Total Consumer Spending', 'E-commerce Share ($1.2 Trillion)'],
                         datasets: [{
                             data: [84, 16],
-                            backgroundColor: ['#e7e5e4', '#0284c7'],
+                            backgroundColor: ['#e2e8f0', '#1e3a8a'],
                             borderWidth: 0
                         }]
                     },
@@ -248,12 +248,12 @@
                         datasets: [{
                             label: 'Depression/Anxiety Risk Multiplier',
                             data: [1, 1.2, 3.0, 3.8, 4.5],
-                            borderColor: '#d97706',
-                            backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                            borderColor: '#ea580c',
+                            backgroundColor: 'rgba(234, 88, 12, 0.1)',
                             fill: true,
                             tension: 0.4,
                             pointRadius: 6,
-                            pointBackgroundColor: '#b91c1c'
+                            pointBackgroundColor: '#1e3a8a'
                         }]
                     },
                     options: {
@@ -288,7 +288,7 @@
                         datasets: [{
                             label: '% of Demographic',
                             data: [38, 46],
-                            backgroundColor: ['#0284c7', '#d97706'],
+                            backgroundColor: ['#1e3a8a', '#ea580c'],
                             borderRadius: 6
                         }]
                     },
@@ -325,7 +325,7 @@
                         datasets: [{
                             label: 'Estimated Annual Loss ($)',
                             data: [3000, 40000, 750000],
-                            backgroundColor: ['#e7e5e4', '#d97706', '#b91c1c'],
+                            backgroundColor: ['#e2e8f0', '#ea580c', '#b91c1c'],
                             borderRadius: 6
                         }]
                     },
@@ -474,7 +474,7 @@
         });
 
         Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.color = '#57534e';
+        Chart.defaults.color = '#334155';
         
         renderSection('welcome');
     </script>
